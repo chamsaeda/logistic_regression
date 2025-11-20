@@ -4,8 +4,48 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>로지스틱 회귀란 무엇일까요?</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="chart.umd.min.js"></script>
     <style>
+        /* [추가된 부분 1] 🎯 아이콘 및 툴팁 스타일 */
+        #lassoIcon {
+            margin-right: 5px;
+            color: #ef4444; 
+            cursor: pointer; 
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+
+        #sparrowPopup {
+            position: absolute; 
+            background-color: #374151; 
+            color: white; 
+            padding: 6px 10px; 
+            border-radius: 4px;
+            font-size: 0.85em; 
+            font-weight: normal;
+            white-space: nowrap; 
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            opacity: 0; 
+            pointer-events: none; 
+            transition: opacity 0.2s ease-in-out; 
+        }
+
+        #sparrowPopup.show {
+            opacity: 1;
+        }
+        
+        #sparrowPopup::after {
+            content: "";
+            position: absolute;
+            top: -5px; 
+            left: 10px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: transparent transparent #374151 transparent;
+        }
+        /* [추가된 부분 1 끝] */
+
         * {
             margin: 0;
             padding: 0;
@@ -291,11 +331,9 @@
         <p class="subtitle">로지스틱 회귀는 <font color="blue"><B>YES or NO를 예측하는 방법</B></font>이에요. 즉, 합격/불합격, 스팸/정상 같은 범주를 확률로 예측해요. 설정을 바꿔가며 곡선이 어떻게 달라지는지 관찰해보세요!</p>
         
         <div class="main-grid">
-            <!-- 왼쪽: 설정 패널 -->
             <div class="panel">
                 <h2>⚙️ 설정</h2>
                 
-                <!-- 시나리오 선택 -->
                 <div class="setting-group purple">
                     <label>📊 데이터 선택</label>
                     <select id="scenario">
@@ -306,7 +344,6 @@
                     <p class="description" id="scenarioDesc">공부시간이 길수록 합격 확률이 증가하는 간단한 관계</p>
                 </div>
                 
-                <!-- 정규화 유형 -->
                 <div class="setting-group">
                     <label>🎯 정규화 유형 (Regularization Type)</label>
                     <div class="radio-group">
@@ -325,8 +362,7 @@
                     </div>
                 </div>
                 
-             <!-- Strength -->
-                <div class="setting-group yellow">
+             <div class="setting-group yellow">
                     <label>⚡ Strength (정규화 강도): C = <span id="strengthValue">1.00</span></label>
                     <input type="range" id="strength" min="0.1" max="3" step="0.1" value="0.1">
                     <div style="display: flex; justify-content: space-between; font-size: 0.875rem; margin-top: 8px;">
@@ -336,7 +372,6 @@
                     <p class="description" id="strengthDesc">⚠️ 약한 정규화 - 데이터에 더 맞춤 (과대적합 위험)</p>
                 </div>
 
-                <!-- Balance Class -->
                 <div class="setting-group green">
                     <label class="checkbox-option">
                         <input type="checkbox" id="balanceClass">
@@ -345,14 +380,12 @@
                     <p class="description" id="balanceDesc">⚪ 균형 조정 안 함 - 데이터 그대로 사용</p>
                 </div>
                 
-                <!-- 현재 정규화 설명 -->
                 <div class="info-box" id="regInfo">
                     <h3><span id="regEmoji">🏔️</span> <span id="regTitle">Ridge (릿지)</span></h3>
                     <p id="regDesc">곡선을 부드럽게 만들어요. 극단적인 값을 방지하고 안정적인 예측을 해요. 기본값으로 추천해요!</p>
                 </div>
             </div>
             
-            <!-- 오른쪽: 그래프 -->
             <div class="panel">
                 <h2>📈 결과 그래프</h2>
                 
@@ -379,7 +412,6 @@
                     </div>
                 </div>
                 
-                <!-- 수식 표시 -->
                 <div class="formula-box">
                     <h3>🔢 예측 수식</h3>
                     <div class="formula" id="formula">P(합격) = 1 / (1 + e^(-(0.00×x + 0.00)))</div>
@@ -390,7 +422,6 @@
                     </div>
                 </div>
                 
-                <!-- 학습 포인트 -->
                 <div class="tips-section">
                     <p style="font-weight: 600; margin-bottom: 4px;">💡 관찰해보세요!</p>
                     <ul>
@@ -402,23 +433,14 @@
             </div>
         </div>
         
-        <!-- 하단 설명 카드 -->
         <div class="bottom-cards">
-            <div class="card">
-                <h3>🎯 Ridge는 언제?</h3>
-                <p>변수가 많고 서로 관련이 있을 때! 모든 변수를 조금씩 사용하면서 부드럽게 예측해요. 가장 안정적이에요.</p>
-            </div>
-            <div class="card">
-                <h3>🎯 Lasso는 언제?</h3>
-                <p>중요한 변수만 찾고 싶을 때! 필요없는 변수는 완전히 제거해서 단순한 모델을 만들어요.</p>
-            </div>
-            <div class="card">
-                <h3>🎯 None은 언제?</h3>
-                <p>데이터가 깨끗하고 간단할 때! 정규화 없이 데이터에 최대한 맞춰서 예측해요. 과대적합 위험이 있어요.</p>
-            </div>
+            <div class="card"><h3><span id="lassoIcon" class="query-icon">🎯</span> Ridge는 언제?</h3><p>변수가 많고 서로 관련이 있을 때! 모든 변수를 조금씩 사용하면서 부드럽게 예측해요. 가장 안정적이에요.</p></div>
+            <div class="card"><h3>🎯 Lasso는 언제?</h3><p>중요한 변수만 찾고 싶을 때! 필요없는 변수는 완전히 제거해서 단순한 모델을 만들어요.</p></div>
+            <div class="card"><h3>🎯 None은 언제?</h3><p>데이터가 깨끗하고 간단할 때! 정규화 없이 데이터에 최대한 맞춰서 예측해요. 과대적합 위험이 있어요.</p></div>
         </div>
     </div>
 
+    <div id="sparrowPopup">참새다!</div>
     <script>
         // 시그모이드 함수
         function sigmoid(x) {
@@ -687,13 +709,47 @@
                 balanceClass ? '✅ 균형 조정 중 - 불균형한 데이터 보정' : '⚪ 균형 조정 안 함 - 데이터 그대로 사용';
             updateChart();
         });
+
+        // ------------------------------------------------------------------
+        // [추가된 부분 4]: 툴팁 팝업 표시 함수
+        // ------------------------------------------------------------------
+        function showSparrowPopup(e) {
+            const popup = document.getElementById('sparrowPopup');
+            
+            // 1. 위치 설정: e.clientX, e.clientY (화면 기준)에 스크롤된 양을 더해 문서 기준 위치로 변환합니다.
+            const leftPosition = e.clientX + window.scrollX + 10; // 기존 오른쪽 10px 이동 유지 + 스크롤 X 보정
+            const topPosition = e.clientY + window.scrollY - 30; // 기존 위로 30px 이동 유지 + 스크롤 Y 보정
+    
+            popup.style.left = `${leftPosition}px`;
+            popup.style.top = `${topPosition}px`;
+            
+            // 2. 클래스 추가: CSS에 정의된 'show' 클래스를 추가하여 보이게 합니다.
+            popup.classList.add('show');
+            
+            // 3. 잠시 후 사라지도록 설정 (0.5초 후)
+            setTimeout(() => {
+                popup.classList.remove('show');
+            }, 500); 
+        }
+        // ------------------------------------------------------------------
         
         // 초기화
-        initChart();
-        updateTable();
-        updateRegInfo();
-        updateChart();
-        document.getElementById('strengthValue').textContent = strength.toFixed(2);
+        // [수정된 부분 5]: window.onload 함수로 초기화 로직 변경
+        window.onload = function() {
+            // 1. 핵심 기능 초기화 (그래프, 테이블, 결과)
+            initChart();
+            updateTable();
+            updateRegInfo();
+            updateChart();
+            document.getElementById('strengthValue').textContent = strength.toFixed(2);
+
+            // 2. 툴팁 이벤트 연결 (아이콘이 로드된 후 연결)
+            const sparrowIcon = document.getElementById('lassoIcon');
+            if(sparrowIcon) {
+                sparrowIcon.addEventListener('click', showSparrowPopup);
+            }
+        };
+        // [수정된 부분 5 끝]
     </script>
 </body>
 </html>
