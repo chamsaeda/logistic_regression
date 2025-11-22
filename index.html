@@ -6,7 +6,7 @@
     <title>로지스틱 회귀란 무엇일까요?</title>
     <script src="chart.umd.min.js"></script>
     <style>
-        /* [추가된 부분 1] 🎯 아이콘 및 툴팁 스타일 */
+        /* 🎯 아이콘 및 툴팁 스타일 */
         #lassoIcon {
             margin-right: 5px;
             color: #ef4444; 
@@ -44,8 +44,7 @@
             border-style: solid;
             border-color: transparent transparent #374151 transparent;
         }
-        /* [추가된 부분 1 끝] */
-
+        
         * {
             margin: 0;
             padding: 0;
@@ -434,9 +433,9 @@
         </div>
         
         <div class="bottom-cards">
-            <div class="card"><h3><span id="lassoIcon" class="query-icon">🎯</span> Ridge는 언제?</h3><p>변수가 많고 서로 관련이 있을 때! 모든 변수를 조금씩 사용하면서 부드럽게 예측해요. 가장 안정적이에요.</p></div>
+            <div class="card"><h3>🎯 Ridge는 언제?</h3><p>변수가 많고 서로 관련이 있을 때! 모든 변수를 조금씩 사용하면서 부드럽게 예측해요. 가장 안정적이에요.</p></div>
             <div class="card"><h3>🎯 Lasso는 언제?</h3><p>중요한 변수만 찾고 싶을 때! 필요없는 변수는 완전히 제거해서 단순한 모델을 만들어요.</p></div>
-            <div class="card"><h3>🎯 None은 언제?</h3><p>데이터가 깨끗하고 간단할 때! 정규화 없이 데이터에 최대한 맞춰서 예측해요. 과대적합 위험이 있어요.</p></div>
+            <div class="card"><h3><span id="lassoIcon" class="query-icon">🎯</span>None은 언제?</h3><p>데이터가 깨끗하고 간단할 때! 정규화 없이 데이터에 최대한 맞춰서 예측해요. 과대적합 위험이 있어요.</p></div>
         </div>
     </div>
 
@@ -734,7 +733,7 @@
         // ------------------------------------------------------------------
         
         // 초기화
-        // [수정된 부분 5]: window.onload 함수로 초기화 로직 변경
+        // window.onload 함수로 초기화 로직 변경
         window.onload = function() {
             // 1. 핵심 기능 초기화 (그래프, 테이블, 결과)
             initChart();
@@ -749,7 +748,7 @@
                 sparrowIcon.addEventListener('click', showSparrowPopup);
             }
         };
-        // [수정된 부분 5 끝]
+       
     </script>
 </body>
 </html>
